@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
-const port = 8001;
+const port = process.env.PORT;
 import {router} from "./routes/urlRoute.js";
 import connectToDb  from "./connect.js";
 

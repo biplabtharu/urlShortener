@@ -2,7 +2,6 @@ import URL from "../models/urlSchema.js";
 import { nanoid } from "nanoid";
 
 async function generateNewShortURL(req, res) {
-  // console.log(req.body)
   const { link } = req.body;
   const shortId = nanoid(8);
 
@@ -16,7 +15,7 @@ async function generateNewShortURL(req, res) {
   });
 
   await newUrl.save();
-  return res.json(`successfully created`);
+  return res.json(newUrl.shortID);
 }
 
 const redirectToUserUrl = async (req, res) => {
@@ -34,7 +33,19 @@ const redirectToUserUrl = async (req, res) => {
       },
     }
   );
+  if (!url) {
+    res.json(`Invalid url`);
+  }
   res.redirect(url.redirectURL);
 };
 
-export { generateNewShortURL, redirectToUserUrl };
+const getUrlHistory = async (req, res) => {
+  const shortID = req.params.shortID;
+  const url = await URL.findOne({ shortID });
+
+  if (!url) {
+    res.json(`invalid url`);
+  }
+  res.json(`${url.visitHistory.length} ${url}`);
+};
+export { generateNewShortURL, redirectToUserUrl, getUrlHistory };
